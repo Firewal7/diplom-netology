@@ -1,0 +1,55 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Update apt packages
+      apt:
+        update_cache: yes
+      when: ansible_os_family == 'Debian'
+
+    - name: Install Python
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      when: ansible_os_family == 'Debian'
+
+    - name: Install required packages
+      apt:
+        name:
+          - python3-pip
+          - python3-setuptools
+          - python3-wheel
+          - python3-dev
+          - libffi-dev
+          - libssl-dev
+          - libyaml-dev
+          - python3
+          - virtualenv
+        state: present
+      when: ansible_os_family == 'Debian'
+
+    - name: Clone Kubespray repository
+      git:
+        repo: "https://github.com/kubernetes-sigs/kubespray.git"
+        dest: "~/kubespray"
+      become: false
+
+    - name: Install Kubespray dependencies
+      pip:
+        requirements: "~/kubespray/requirements.txt"
+        executable: pip3
+      become: true
+
+    - name: Copy inventory file
+      command: cp -rfp ~/kubespray/inventory/sample ~/kubespray/inventory/mycluster
+      become: false
+
+    - name: Configure Kubespray inventory
+      lineinfile:
+        path: "~/kubespray/inventory/mycluster/inventory.ini"
+        regexp: '^(kube_network_plugin: )'
+        line: 'kube_network_plugin: calico'
+      become: false
+
+    - name: Run Kubespray
+      command: |
+        ansible-playbook -i ~/kubespray/inventory/mycluster/inventory.ini --become --become-user=root ~/kubespray/cluster.yml
+      become: false
