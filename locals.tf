@@ -1,3 +1,3 @@
 locals {
-    public = "${var.public_name}"
- }
+  instance_names = ["node1", "node2"]
+}
