@@ -17,7 +17,7 @@ data "yandex_compute_image" "public-ubuntu" {
 # Master VM
 resource "yandex_compute_instance" "master" {
   name      = "master"
-  hostname  = "master"  # Пример, вы можете изменить на свое усмотрение
+  hostname  = "master"
   
   platform_id = "standard-v1"
   resources {
@@ -29,6 +29,7 @@ resource "yandex_compute_instance" "master" {
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.public-ubuntu.image_id
+      size     = 100  # Новый размер диска в гигабайтах
     }
   }
 
@@ -36,9 +37,11 @@ resource "yandex_compute_instance" "master" {
     preemptible = true
   }
 
-  network_interface {
-    subnet_id = yandex_vpc_subnet.central1-a.id
-    nat       = true
+   network_interface {
+    subnet_id     = yandex_vpc_subnet.central1-a.id
+    nat           = true
+    # Устанавливаем желаемый внутренний IP-адрес для master-ноды
+    ip_address    = "10.0.1.10"
   }
 
   metadata = {
@@ -46,7 +49,7 @@ resource "yandex_compute_instance" "master" {
   }
 
   provisioner "local-exec" {
-    command = "sleep 15"  # Подождать 15 секунд после создания
+    command = "sleep 10"  # Подождать 10 секунд после создания
   }
   
   provisioner "file" {
@@ -81,10 +84,10 @@ resource "yandex_compute_instance" "master" {
 
     inline = [
       "sudo apt-get update",
-      "chmod 600 /home/ubuntu/.ssh/new.rsa",  # Добавляем команду для изменения прав доступа к файлу id.rsa
-      "sudo apt install python3-pip -y",
-      "pip3 install ansible",
-      "PATH=$PATH:/home/ubuntu/.local/bin ansible-playbook -i /home/ubuntu/inventory.ini --become --become-user=root /home/ubuntu/cluster.yml",
+      "sudo apt-get install -y python3-pip",
+      "sudo pip3 install ansible",
+      "chmod 600 /home/ubuntu/.ssh/new.rsa",
+      "ansible-playbook -i /home/ubuntu/inventory.ini --become --become-user=root /home/ubuntu/cluster.yml",
     ]
   }
 }
@@ -93,7 +96,7 @@ resource "yandex_compute_instance" "master" {
 resource "yandex_compute_instance" "node" {
   count = length(local.instance_names)
   name  = local.instance_names[count.index]
-  hostname    = local.instance_names[count.index]  # Пример, вы можете изменить на свое усмотрение
+  hostname    = local.instance_names[count.index]
   
   platform_id = "standard-v1"
   resources {
@@ -105,6 +108,7 @@ resource "yandex_compute_instance" "node" {
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.public-ubuntu.image_id
+      size     = 100  # Новый размер диска в гигабайтах
     }
   }
 
@@ -113,14 +117,32 @@ resource "yandex_compute_instance" "node" {
   }
 
   network_interface {
-    subnet_id = yandex_vpc_subnet.central1-a.id
-    nat       = true
+    subnet_id     = yandex_vpc_subnet.central1-a.id
+    nat           = true
+    # Устанавливаем желаемый внутренний IP-адрес для каждой ноды
+    ip_address    = "10.0.1.${count.index + 11}"
   }
 
   metadata = {
     ssh-keys = "ubuntu:${file("/root/.ssh/new.rsa.pub")}"
   }
+  
+  provisioner "local-exec" {
+    command = "sleep 10"  # Подождать 10 секунд после создания
+  }
+  
+#  provisioner "file" {
+#    source      = "/home/msi/diplom/ansible/"
+#    destination = "/home/ubuntu/"
+#    connection {
+#      type        = "ssh"
+#      user        = "ubuntu"
+#      private_key = file("/root/.ssh/new.rsa")
+#      host        = self.network_interface[0].nat_ip_address
+#    }
+#  }
 }
+  
 
 ## Service account for bucket
 #resource "yandex_iam_service_account" "bucket-sa" {

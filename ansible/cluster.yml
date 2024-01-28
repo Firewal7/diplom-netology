@@ -1,15 +1,8 @@
 ---
-- hosts: all
+- hosts: master
   become: true
+  remote_user: root
   tasks:
-    - name: Update apt packages
-      apt:
-        update_cache: yes
-
-    - name: Install Python
-      apt:
-        name: python3
-        state: present
 
     - name: Install Git
       apt:
@@ -21,6 +14,11 @@
         repo: "https://github.com/kubernetes-sigs/kubespray.git"
         dest: "/home/ubuntu/kubespray"
         version: "master"
+        
+    # Обновление индекса пакетов
+    - name: Update package cache
+      apt:
+        update_cache: yes
 
     - name: Install required packages
       apt:
@@ -32,7 +30,6 @@
           - libffi-dev
           - libssl-dev
           - libyaml-dev
-          - python3
           - virtualenv
         state: present
 
@@ -43,17 +40,29 @@
       become: true
       
     - name: Copy inventory file
-      command: cp -rfp ~/kubespray/inventory/sample ~/kubespray/inventory/mycluster
-      become: false
+      command: cp -rfp /home/ubuntu/kubespray/inventory/sample /home/ubuntu/kubespray/inventory/mycluster
+      become: true
 
-    - name: Configure Kubespray inventory
-      lineinfile:
-        path: "/home/ubuntu/kubespray/inventory/mycluster/inventory.ini"
-        regexp: '^(kube_network_plugin: )'
-        line: 'kube_network_plugin: calico'
-      become: false
+    - name: Set fact for IPS
+      set_fact:
+        IPS: ["10.0.1.10", "10.0.1.11", "10.0.1.12"]
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
 
-    - name: Run Kubespray
-      command: |
-        ansible-playbook -i ~/kubespray/inventory/mycluster/inventory.ini --become --become-user=root ~/kubespray/cluster.yml
-      become: false
+    - name: Execute the inventory.py command
+      command: "python3 /home/ubuntu/kubespray/contrib/inventory_builder/inventory.py {{ IPS | join(' ') }} --config-file=/home/ubuntu/kubespray/inventory/mycluster/hosts.yaml"
+      args:
+        chdir: /home/ubuntu/kubespray
+      become: true
+
+    - name: Move hosts.yaml to Kubespray inventory
+      command: mv /home/ubuntu/hosts.yaml /home/ubuntu/kubespray/inventory/mycluster/
+      become: true
+
+    - name: Execute Kubespray on master
+      ansible.builtin.command:
+        cmd: "ansible-playbook -i /home/ubuntu/kubespray/inventory/mycluster/hosts.yaml /home/ubuntu/kubespray/cluster.yml -b"
+        chdir: /home/ubuntu/kubespray
+#      async: 2000  # Устанавливаем максимальное время выполнения в секундах (например, 600 секунд)
+#      poll: 0    # Ожидаем завершения задачи
+
