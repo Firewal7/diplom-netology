@@ -1,4 +1,4 @@
 locals {
-  instance_names = ["node1", "node2"]
-  
+  instance_master = "master"
+  instance_nodes  = ["node1", "node2"]
 }

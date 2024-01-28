@@ -13,22 +13,17 @@ variable "folder_id" {
   description = "Your Yandex.Cloud Folder ID"
 }
 
-variable "yc_folder_id" {
-  type        = string
-  default     = "b1giheq958o43g020idm"
-}
-
 variable "default_zone" {
   type        = string
   default     = "ru-central1-a"
   description = "Default zone for resources"
 }
 
-#variable "default_cidr" {
-#  type    = list(string)
-#  default = ["10.0.1.0/24", "10.0.2.0/24", "10.0.3.0/24"]
-#  description = "https://cloud.yandex.ru/docs/vpc/operations/subnet-create"
-#}
+variable "default_zone_b" {
+  type        = string
+  default     = "ru-central1-b"
+  description = "Default zone for resources"
+}
 
 variable "vpc_name" {
   type        = string
@@ -36,20 +31,17 @@ variable "vpc_name" {
   description = "VPC network & subnet name"
 }
 
-###yandex_compute_image vars
 variable "public_image" {
   type        = string
   default     = "fd8vljd295nqdaoogf3g"
   description = "Yandex.Compute image ID"
 }
-###name VM vars
+
 variable "public_name" {
   type        = string
   default     = "public"
   description = "VM1 name"
 }
-
-###public_resources var
 
 variable "public_resources" {
   type = map(number)
@@ -57,5 +49,6 @@ variable "public_resources" {
     cores          = 4
     memory         = 4
     core_fraction  = 100
+    size           = 100
  }
 }

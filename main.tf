@@ -5,9 +5,16 @@ resource "yandex_vpc_network" "netology-network" {
 
 resource "yandex_vpc_subnet" "central1-a" {
   name           = "central1-a-subnet"
-  zone           = "ru-central1-a"
+  zone           = var.default_zone
   network_id     = yandex_vpc_network.netology-network.id
   v4_cidr_blocks = ["10.0.1.0/24"]
+}
+
+resource "yandex_vpc_subnet" "central1-b" {
+  name           = "central1-b-subnet"
+  zone           = var.default_zone_b
+  network_id     = yandex_vpc_network.netology-network.id
+  v4_cidr_blocks = ["10.0.2.0/24"]
 }
 
 data "yandex_compute_image" "public-ubuntu" {
@@ -16,8 +23,8 @@ data "yandex_compute_image" "public-ubuntu" {
 
 # Master VM
 resource "yandex_compute_instance" "master" {
-  name      = "master"
-  hostname  = "master"
+  name      = local.instance_master
+  hostname  = local.instance_master
   
   platform_id = "standard-v1"
   resources {
@@ -28,8 +35,8 @@ resource "yandex_compute_instance" "master" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.public-ubuntu.image_id
-      size     = 100  # Новый размер диска в гигабайтах
+      image_id = var.public_image
+      size     = var.public_resources.size
     }
   }
 
@@ -48,8 +55,9 @@ resource "yandex_compute_instance" "master" {
     ssh-keys = "ubuntu:${file("/root/.ssh/new.rsa.pub")}"
   }
 
+  # Подождать 10 секунд после создания
   provisioner "local-exec" {
-    command = "sleep 10"  # Подождать 10 секунд после создания
+    command = "sleep 10"  
   }
   
   provisioner "file" {
@@ -94,9 +102,9 @@ resource "yandex_compute_instance" "master" {
  
 # Node VMs
 resource "yandex_compute_instance" "node" {
-  count = length(local.instance_names)
-  name  = local.instance_names[count.index]
-  hostname    = local.instance_names[count.index]
+  count = length(local.instance_nodes)
+  name  = local.instance_nodes[count.index]
+  hostname    = local.instance_nodes[count.index]
   
   platform_id = "standard-v1"
   resources {
@@ -107,8 +115,8 @@ resource "yandex_compute_instance" "node" {
 
   boot_disk {
     initialize_params {
-      image_id = data.yandex_compute_image.public-ubuntu.image_id
-      size     = 100  # Новый размер диска в гигабайтах
+      image_id = var.public_image
+      size     = var.public_resources.size
     }
   }
 
@@ -127,52 +135,40 @@ resource "yandex_compute_instance" "node" {
     ssh-keys = "ubuntu:${file("/root/.ssh/new.rsa.pub")}"
   }
   
+  # Подождать 10 секунд после создания
   provisioner "local-exec" {
-    command = "sleep 10"  # Подождать 10 секунд после создания
+    command = "sleep 10"
   }
-  
-#  provisioner "file" {
-#    source      = "/home/msi/diplom/ansible/"
-#    destination = "/home/ubuntu/"
-#    connection {
-#      type        = "ssh"
-#      user        = "ubuntu"
-#      private_key = file("/root/.ssh/new.rsa")
-#      host        = self.network_interface[0].nat_ip_address
-#    }
-#  }
 }
-  
+  # Создаем сервисный аккаунт для bucket
+resource "yandex_iam_service_account" "bucket-sa" {
+  name        = "bucket-sa"
+  description = "service account for bucket"
+ }
+ 
+  # Создаем роль для сервисного аккаунта
+resource "yandex_resourcemanager_folder_iam_member" "sa-editor" {
+  folder_id = var.folder_id
+  role      = "storage.editor"
+  member    = "serviceAccount:${yandex_iam_service_account.bucket-sa.id}"
+}
 
-## Service account for bucket
-#resource "yandex_iam_service_account" "bucket-sa" {
-#  name        = "bucket-sa"
-#  description = "service account for bucket"
-#}
+  # Создаем ключи для сервисного аккаунта
+resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
+  service_account_id = yandex_iam_service_account.bucket-sa.id
+  description        = "static access key for object storage"
+}
 
-## Role for service account
-#resource "yandex_resourcemanager_folder_iam_member" "sa-editor" {
-#  folder_id = var.yc_folder_id
-#  role      = "storage.editor"
-#  member    = "serviceAccount:${yandex_iam_service_account.bucket-sa.id}"
-#}
+  # Создаем bucket
+resource "yandex_storage_bucket" "vp-bucket" {
+  access_key = yandex_iam_service_account_static_access_key.sa-static-key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
+  bucket     = "sofin-netology-bucket-2024"
 
-## Keys for service account
-#resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
-#  service_account_id = yandex_iam_service_account.bucket-sa.id
-#  description        = "static access key for object storage"
-#}
+  max_size = 1073741824 # 1 Gb
 
-## Create bucket
-#resource "yandex_storage_bucket" "vp-bucket" {
-#  access_key = yandex_iam_service_account_static_access_key.sa-static-key.access_key
-#  secret_key = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
-#  bucket     = "sofin-netology-bucket-2024"
-
-#  max_size = 1073741824 # 1 Gb
-
-#  anonymous_access_flags {
-#    read = true
-#    list = false
-#  }
-#}
+  anonymous_access_flags {
+    read = true
+    list = false
+  }
+}

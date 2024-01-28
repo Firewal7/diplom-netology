@@ -4,11 +4,13 @@
   remote_user: root
   tasks:
 
+    # Установка Git
     - name: Install Git
       apt:
         name: git
         state: present
 
+    # Клонирование репозитория Kubespray
     - name: Clone Kubespray repository
       git:
         repo: "https://github.com/kubernetes-sigs/kubespray.git"
@@ -20,6 +22,7 @@
       apt:
         update_cache: yes
 
+    # Установка пакетов
     - name: Install required packages
       apt:
         name:
@@ -33,36 +36,39 @@
           - virtualenv
         state: present
 
+    # Установка зависимостей из requirements.txt
     - name: Install Kubespray dependencies
       pip:
         requirements: "/home/ubuntu/kubespray/requirements.txt"
         executable: pip3
       become: true
       
+    # Копирование файла инвентаря
     - name: Copy inventory file
       command: cp -rfp /home/ubuntu/kubespray/inventory/sample /home/ubuntu/kubespray/inventory/mycluster
       become: true
 
+    # Указываем внутрение IP адреса в конфиг
     - name: Set fact for IPS
       set_fact:
         IPS: ["10.0.1.10", "10.0.1.11", "10.0.1.12"]
       vars:
         ansible_python_interpreter: /usr/bin/python3
 
+    # Выполняем команду inventory.py
     - name: Execute the inventory.py command
       command: "python3 /home/ubuntu/kubespray/contrib/inventory_builder/inventory.py {{ IPS | join(' ') }} --config-file=/home/ubuntu/kubespray/inventory/mycluster/hosts.yaml"
       args:
         chdir: /home/ubuntu/kubespray
       become: true
-
+    
+    # Перемещаем hosts.yaml в инвентарь Kubespray
     - name: Move hosts.yaml to Kubespray inventory
       command: mv /home/ubuntu/hosts.yaml /home/ubuntu/kubespray/inventory/mycluster/
       become: true
 
+    # Выполняем Kubespray на master
     - name: Execute Kubespray on master
       ansible.builtin.command:
         cmd: "ansible-playbook -i /home/ubuntu/kubespray/inventory/mycluster/hosts.yaml /home/ubuntu/kubespray/cluster.yml -b"
         chdir: /home/ubuntu/kubespray
-#      async: 2000  # Устанавливаем максимальное время выполнения в секундах (например, 600 секунд)
-#      poll: 0    # Ожидаем завершения задачи
-
