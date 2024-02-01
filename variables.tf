@@ -13,7 +13,7 @@ variable "folder_id" {
   description = "Your Yandex.Cloud Folder ID"
 }
 
-variable "default_zone" {
+variable "default_zone_a" {
   type        = string
   default     = "ru-central1-a"
   description = "Default zone for resources"
@@ -25,10 +25,16 @@ variable "default_zone_b" {
   description = "Default zone for resources"
 }
 
+variable "default_zone_c" {
+  type        = string
+  default     = "ru-central1-c"
+  description = "Default zone for resources"
+}
+
 variable "vpc_name" {
   type        = string
   default     = "develop"
-  description = "VPC network & subnet name"
+  description = "Name for VPC network & subnets"
 }
 
 variable "public_image" {
@@ -37,11 +43,6 @@ variable "public_image" {
   description = "Yandex.Compute image ID"
 }
 
-variable "public_name" {
-  type        = string
-  default     = "public"
-  description = "VM1 name"
-}
 
 variable "public_resources" {
   type = map(number)

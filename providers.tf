@@ -5,12 +5,36 @@ terraform {
     }
   }
   required_version = ">=0.13"
+  
+#  backend "s3" {
+#    endpoint                    = "storage.yandexcloud.net"
+#    bucket                      = "sofin-diplom-bucket-2024"
+#    region                      = "ru-central1"
+#    key                         = "tfstate"
+#   skip_region_validation      = true
+#   skip_credentials_validation = true
+# }
 }
 
+#data "terraform_remote_state" "vpc" {
+#  backend   = "s3"
+#  config    = {
+#    endpoint                    = "storage.yandexcloud.net"
+#    bucket                      = "sofin-diplom-bucket-2024"
+#    region                      = "ru-central1"
+#    key                         = "tfstate"
+#    skip_region_validation      = true
+#    skip_credentials_validation = true
+#  }
+#}
+
+# Блок конфигурации провайдера Yandex.Cloud
 provider "yandex" {
   token     = var.token
   cloud_id  = var.cloud_id
   folder_id = var.folder_id
-  zone      = var.default_zone
 }
- 
+
+data "yandex_compute_image" "public-ubuntu" {
+  image_id = var.public_image
+}
