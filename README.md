@@ -54,17 +54,29 @@
 
 ## Решение
 
-### Конфигурация Terraform
+### Конфигурация [Terraform](https://github.com/Firewal7/diplom-netology)
 
-Все происходит без ручных действий.
+1. Зпускаем команду terraform apply, созадаётся вся облачная инфраструктура из пункта 1., совместно с пунктом 2. Создание Kubernetes кластера.
 
-<details>
-<summary>Нажми, terraform apply /скрыть</summary>
+Выполним команду terraform init:
+
+![Ссылка 1]()
+
+Выполним команду terraform validate:
+
+![Ссылка 2]()
+
+Выполним команду terraform apply:
+
+![Ссылка 3]()
+
+![Ссылка 4]()
+
+## Остаётся только загрузить файл состояния tdstate, после развёртывания всей инфраструктуры:
 
 
 
-</details>
-
+![Ссылка 5]()
 
 ### Создание Kubernetes кластера
 
@@ -87,6 +99,15 @@
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
 
 ---
+
+## Решение:
+
+Этот пункт готов совместно с развёрнтыванием инфраструктуры, используя kubespray.
+
+Зайдём на master и проверим:
+
+![Ссылка 6]()
+
 ### Создание тестового приложения
 
 Для перехода к следующему этапу необходимо подготовить тестовое приложение, эмулирующее основное приложение разрабатываемое вашей компанией.
@@ -105,6 +126,27 @@
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
 
 ---
+
+## Решение:
+
+Подготовил приложение.
+
+[Dockerfile](https://github.com/Firewal7/diplom-netology/blob/main/application/Dockerfile)
+
+[index.html](https://github.com/Firewal7/diplom-netology/blob/main/application/index.html)
+
+Соберём образ командой: docker build -t egorz/netology-diploma-web-app:1.0 .
+
+![Ссылка 6]()
+
+Проверим созданный image: docker image
+
+![Ссылка 6]()
+
+Запускаем контейнер: docker run --network host egorz/netology-diploma-web-app:1.0
+
+![Ссылка 6]()
+
 ### Подготовка cистемы мониторинга и деплой приложения
 
 Уже должны быть готовы конфигурации для автоматического создания облачной инфраструктуры и поднятия Kubernetes кластера.  

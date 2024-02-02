@@ -25,7 +25,6 @@ resource "yandex_compute_instance" "master" {
    network_interface {
     subnet_id     = yandex_vpc_subnet.central1-a.id
     nat           = true
-    # Устанавливаем желаемый внутренний IP-адрес для master-ноды
     ip_address    = "10.0.1.10"
   }
 
@@ -33,9 +32,9 @@ resource "yandex_compute_instance" "master" {
     ssh-keys = "ubuntu:${file("/root/.ssh/new.rsa.pub")}"
   }
 
-  # Подождать 10 секунд после создания
+  # Подождать 15 секунд после создания
   provisioner "local-exec" {
-    command = "sleep 10"  
+    command = "sleep 15"  
   }
   
   provisioner "file" {
@@ -105,7 +104,6 @@ resource "yandex_compute_instance" "node1" {
    network_interface {
     subnet_id     = yandex_vpc_subnet.central1-b.id
     nat           = true
-    # Устанавливаем желаемый внутренний IP-адрес для master-ноды
     ip_address    = "10.0.2.11"
   } 
 
@@ -140,8 +138,77 @@ resource "yandex_compute_instance" "node2" {
    network_interface {
     subnet_id     = yandex_vpc_subnet.central1-c.id
     nat           = true
-    # Устанавливаем желаемый внутренний IP-адрес для master-ноды
     ip_address    = "10.0.3.12"
+  } 
+
+  metadata = {
+    ssh-keys = "ubuntu:${file("/root/.ssh/new.rsa.pub")}"
+  } 
+}
+
+# Teamcity-Server
+resource "yandex_compute_instance" "teamsity-server" {
+  name      = local.instance_teamsity-server
+  hostname  = local.instance_teamsity-server
+  zone      = var.default_zone_a
+  
+  platform_id = "standard-v1"
+  resources {
+    cores         = var.teamcity_resources_server.cores
+    memory        = var.teamcity_resources_server.memory
+    core_fraction = var.teamcity_resources_server.core_fraction
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = var.public_image
+      size     = var.teamcity_resources_server.size
+    }
+  }
+
+  scheduling_policy {
+    preemptible = true
+  }
+
+   network_interface {
+    subnet_id     = yandex_vpc_subnet.central1-a.id
+    nat           = true
+    ip_address    = "10.0.1.44"
+  } 
+
+  metadata = {
+    ssh-keys = "ubuntu:${file("/root/.ssh/new.rsa.pub")}"
+  } 
+}
+
+# Teamcity-Agent
+resource "yandex_compute_instance" "teamsity-agent" {
+  name      = local.instance_teamsity-agent
+  hostname  = local.instance_teamsity-agent
+  zone      = var.default_zone_a
+  
+  platform_id = "standard-v1"
+  resources {
+    cores         = var.teamcity_resources_agent.cores
+    memory        = var.teamcity_resources_agent.memory
+    core_fraction = var.teamcity_resources_agent.core_fraction
+  }
+
+  boot_disk {
+    initialize_params {
+      image_id = var.public_image
+      size     = var.teamcity_resources_agent.size
+    }
+  }
+
+  scheduling_policy {
+    preemptible = true
+  }
+
+   network_interface {
+    subnet_id     = yandex_vpc_subnet.central1-a.id
+    nat           = true
+    ip_address    = "10.0.1.34"
   } 
 
   metadata = {

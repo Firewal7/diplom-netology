@@ -11,13 +11,6 @@ resource "yandex_resourcemanager_folder_iam_member" "sa-editor" {
   member    = "serviceAccount:${yandex_iam_service_account.bucket-sa.id}"
 }
 
-# Create Role "storage-admin"
-#resource "yandex_resourcemanager_folder_iam_member" "storage-admin" {
-#  folder_id = var.folder_id
-#  role      = "storage.admin"
-#  member    = "serviceAccount:${yandex_iam_service_account.bucket-sa.id}"
-#}
-
 # Encription/decryption
 resource "yandex_resourcemanager_folder_iam_member" "encrypterDecrypter" {
   folder_id = var.folder_id

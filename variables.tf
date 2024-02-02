@@ -49,7 +49,27 @@ variable "public_resources" {
   default = {
     cores          = 4
     memory         = 4
+    core_fraction  = 20
+    size           = 60
+ }
+}
+
+variable "teamcity_resources_server" {
+  type = map(number)
+  default = {
+    cores          = 4
+    memory         = 4
     core_fraction  = 100
-    size           = 100
+    size           = 60
+ }
+}
+
+variable "teamcity_resources_agent" {
+  type = map(number)
+  default = {
+    cores          = 2
+    memory         = 2
+    core_fraction  = 20
+    size           = 60
  }
 }
