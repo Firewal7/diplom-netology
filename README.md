@@ -43,21 +43,21 @@
 
 Выполним команду terraform init:
 
-![Ссылка 1]()
+![Ссылка 1](https://github.com/Firewal7/diplom-netology/blob/main/images/1.init.jpg)
 
 Выполним команду terraform apply:
 
-![Ссылка 2]()
+![Ссылка 2](https://github.com/Firewal7/diplom-netology/blob/main/images/2.apply.jpg)
 
-![Ссылка 3]()
+![Ссылка 3](https://github.com/Firewal7/diplom-netology/blob/main/images/3.console.jpg)
 
-![Ссылка 4]()
+![Ссылка 4](https://github.com/Firewal7/diplom-netology/blob/main/images/4.vm.jpg)
 
 ## Остаётся загрузить файл состояния tdstate, после развёртывания всей инфраструктуры:
 
 При развёртывании облачной инфраструктуры в файле providers.tf закомментирован раздел backend. После развёртывания мы его откомментируем, что бы загрузить файл состояния. 
 
-![Ссылка 5]()
+![Ссылка 5](https://github.com/Firewal7/diplom-netology/blob/main/images/5.provider.jpg)
 
 Выполнил команды в оболочке:
 
@@ -74,9 +74,9 @@ terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_
 terraform apply -auto-approve
 ```
 
-![Ссылка 6]()
+![Ссылка 6](https://github.com/Firewal7/diplom-netology/blob/main/images/6.state.jpg)
 
-![Ссылка 7]()
+![Ссылка 7](https://github.com/Firewal7/diplom-netology/blob/main/images/7.console.state.jpg)
 
 ### Создание Kubernetes кластера
 
@@ -106,7 +106,7 @@ terraform apply -auto-approve
 
 Зайдём на master и проверим:
 
-![Ссылка 8]()
+![Ссылка 8](https://github.com/Firewal7/diplom-netology/blob/main/images/8.master.jpg)
 
 ### Создание тестового приложения
 
@@ -137,19 +137,19 @@ terraform apply -auto-approve
 
 Соберём образ командой: docker build -t bbb8c2e28d7d/application:1.0 .
 
-![Ссылка 9]()
+![Ссылка 9](https://github.com/Firewal7/diplom-netology/blob/main/images/9.build.jpg)
 
 Запускаем контейнер: docker run bbb8c2e28d7d/application:1.0
 
-![Ссылка 10]()
+![Ссылка 10](https://github.com/Firewal7/diplom-netology/blob/main/images/10.run.jpg)
 
-![Ссылка 11]()
+![Ссылка 11](https://github.com/Firewal7/diplom-netology/blob/main/images/11.brauzer.jpg)
 
 Загружаем в Dockerhub: docker push bbb8c2e28d7d/application:1.0
 
-![Ссылка 12]()
+![Ссылка 12](https://github.com/Firewal7/diplom-netology/blob/main/images/12.push.jpg)
 
-![Ссылка 13]()
+![Ссылка 13](https://github.com/Firewal7/diplom-netology/blob/main/images/13.dockerhub.jpg)
 
 ### Подготовка cистемы мониторинга и деплой приложения
 
