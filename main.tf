@@ -72,7 +72,7 @@ resource "yandex_compute_instance" "master" {
       "sudo apt-get install -y python3-pip",
       "sudo pip3 install ansible",
       "chmod 600 /home/ubuntu/.ssh/new.rsa",
-      "ansible-playbook -i /home/ubuntu/inventory.ini --become --become-user=root /home/ubuntu/cluster.yml",
+      "ansible-playbook -i /home/ubuntu/inventory/inventory.ini --become --become-user=root /home/ubuntu/playbooks/cluster.yml",
     ]
   }
 }

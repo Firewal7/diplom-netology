@@ -6,14 +6,14 @@ terraform {
   }
   required_version = ">=0.13"
   
-#  backend "s3" {
-#    endpoint                    = "storage.yandexcloud.net"
-#    bucket                      = "sofin-diplom-bucket-2024"
-#    region                      = "ru-central1"
-#    key                         = "tfstate"
-#    skip_region_validation      = true
- #   skip_credentials_validation = true
-# }
+  backend "s3" {
+    endpoint                    = "storage.yandexcloud.net"
+    bucket                      = "sofin-diplom-bucket-2024"
+    region                      = "ru-central1"
+    key                         = "tfstate"
+    skip_region_validation      = true
+   skip_credentials_validation = true
+ }
 }
 
 # Блок конфигурации провайдера Yandex.Cloud

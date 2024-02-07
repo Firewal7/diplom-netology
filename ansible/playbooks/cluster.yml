@@ -64,7 +64,7 @@
     
     # Перемещаем hosts.yaml в инвентарь Kubespray
     - name: Move hosts.yaml to Kubespray inventory
-      command: mv /home/ubuntu/hosts.yaml /home/ubuntu/kubespray/inventory/mycluster/
+      command: mv /home/ubuntu/inventory/hosts.yaml /home/ubuntu/kubespray/inventory/mycluster/
       become: true
 
     # Выполняем Kubespray на master
