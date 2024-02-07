@@ -11,26 +11,26 @@ resource "yandex_resourcemanager_folder_iam_member" "sa-editor" {
   member    = "serviceAccount:${yandex_iam_service_account.bucket-sa.id}"
 }
 
-# Encription/decryption
+# Encription/decryption (Шифрование/дешифрование)
 resource "yandex_resourcemanager_folder_iam_member" "encrypterDecrypter" {
   folder_id = var.folder_id
   role      = "kms.keys.encrypterDecrypter"
   member    = "serviceAccount:${yandex_iam_service_account.bucket-sa.id}"
 }
 
-# Create Static Access Key
+# Создание статического ключа доступа (для доступа к бэкэнду хранилища)
 resource "yandex_iam_service_account_static_access_key" "bucket-static_access_key" {
   service_account_id = yandex_iam_service_account.bucket-sa.id
   description        = "Static access key for Terraform Backend Bucket"
 }
 
-# Создаем ключи для сервисного аккаунта
+# Создаем ключи для сервисного аккаунта (для доступа к объектному хранилищу)
 resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
   service_account_id = yandex_iam_service_account.bucket-sa.id
   description        = "static access key for object storage"
 }
 
-# KMS symmetric key for Storage Bucket.
+# Ключ KMS для хранилища (для шифрования данных в хранилище)
 resource "yandex_kms_symmetric_key" "key-a" {
   folder_id         = var.folder_id
   name              = "symmetric-key"
@@ -42,7 +42,7 @@ resource "yandex_kms_symmetric_key" "key-a" {
   }
 }
  
-# Create Storage Bucket.
+# Создаем бэкэнд хранилище (с шифрованием данных)
 resource "yandex_storage_bucket" "backend-encrypted" {
   bucket     = "sofin-diplom-bucket-2024"
   access_key = yandex_iam_service_account_static_access_key.bucket-static_access_key.access_key
