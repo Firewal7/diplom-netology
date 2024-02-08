@@ -365,9 +365,9 @@ networkpolicy.networking.k8s.io/grafana configured
 
 ![Ссылка 15](https://github.com/Firewal7/diplom-netology/blob/main/images/15.grafana.resurce.jpg)
 
-## Далее я развернём наше приложение в кластере Kubernetes.
+## Далее развернём наше приложение в кластере Kubernetes.
 
-[helm-chart]()
+[helm-chart](https://github.com/Firewal7/diplom-netology/tree/main/helm)
 
 ```
 ubuntu@master:~/application$ sudo helm install application /home/ubuntu/application
@@ -386,7 +386,7 @@ application     default         1               2024-02-08 16:00:54.381983702 +0
 
 ![Ссылка 16](https://github.com/Firewal7/diplom-netology/blob/main/images/16.deploy.jpg)
 
-![Ссылка 17](https://github.com/Firewal7/diplom-netology/blob/main/images/16.deploy.wide.jpg)
+![Ссылка 17](https://github.com/Firewal7/diplom-netology/blob/main/images/17.deploy.wide.jpg)
 
 Переходим по IP адресу node2 на котором задеплоили (http://51.250.38.116:30201) порт 30201 мы задали в service.yaml 
 
