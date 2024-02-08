@@ -43,11 +43,11 @@
 
 Создаётся вся облачная инфраструктура, дополнительно выполняется последовательно три playbook-а на ВМ master:
 
-``` 
-Первый на развертывание кластера Kubernetes с помощью Kubespray. (master, node1, node2)
-Второй для установки TeamCity на сервере и агенте. (Для CI/CD выбрал TeamCity и заранее развернул все)
-Третий устанавливает Postgresql на ВМ teamcity-server. 
-```
+
+### Первый на развертывание кластера Kubernetes с помощью Kubespray. (master, node1, node2).
+### Второй для установки TeamCity на сервере и агенте. (Для CI/CD выбрал TeamCity).
+### Третий устанавливает Postgresql на ВМ teamcity-server. 
+
 
 Выполним команду terraform init:
 
@@ -392,7 +392,7 @@ application     default         1               2024-02-08 16:00:54.381983702 +0
 
 Переходим по IP адресу node2 на котором задеплоили (http://51.250.38.116:30201) порт 30201 мы задали в service.yaml 
 
-![Ссылка 18](https://github.com/Firewal7/diplom-netology/blob/main/images/18.deploy.applic.jpg)
+![Ссылка 18](https://github.com/Firewal7/diplom-netology/blob/main/images/18.deploy.appl.jpg)
 
 
 ### Установка и настройка CI/CD
