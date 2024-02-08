@@ -1,7 +1,6 @@
 - name: Deploy TeamCity Server
   hosts: teamcity-server
   tasks:
-    
     - name: Update apt package cache
       ansible.builtin.apt:
         update_cache: yes
@@ -81,9 +80,18 @@
         image: jetbrains/teamcity-agent:2023.05.4-linux-sudo
         privileged: true
         state: started
-        restart_policy: always  # Добавляем параметр перезапуска контейнера
+        restart_policy: always
         volumes:
           - "{{ agent_folder_path }}:/data/teamcity_agent/conf"
         env:
           SERVER_URL: "10.0.1.44:8111"
           DOCKER_IN_DOCKER: "start"
+
+    - name: Wait for the container to be started
+      wait_for:
+        host: localhost
+        port: 8111
+        delay: 10
+        state: started
+      retries: 10
+      delay: 10

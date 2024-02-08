@@ -39,7 +39,15 @@
 
 ### Конфигурация [Terraform](https://github.com/Firewal7/diplom-netology)
 
-1. Зпускаем команду terraform apply, созадаётся вся облачная инфраструктура совместно с созданием кластера Kubernetes. Для CI/CD решил использовать TeamCity, сразу развернув ВМ.
+1. Запускаем команду terraform apply. 
+
+Создаётся вся облачная инфраструктура, дополнительно выполняется последовательно три playbook-а на ВМ master:
+
+``` 
+Первый на развертывание кластера Kubernetes с помощью Kubespray. (master, node1, node2)
+Второй для установки TeamCity на сервере и агенте. (Для CI/CD выбрал TeamCity и заранее развернул все)
+Третий устанавливает Postgresql на ВМ teamcity-server. 
+```
 
 Выполним команду terraform init:
 
@@ -175,6 +183,215 @@ terraform apply -auto-approve
 ## Решение:
 
 Развернём систему мониторинга с помощью Kube-Prometheus.
+
+Клонируем репозиторий:
+
+```
+ubuntu@master:~$ git clone https://github.com/prometheus-operator/kube-prometheus.git
+Cloning into 'kube-prometheus'...
+remote: Enumerating objects: 19274, done.
+remote: Counting objects: 100% (5736/5736), done.
+remote: Compressing objects: 100% (463/463), done.
+remote: Total 19274 (delta 5493), reused 5352 (delta 5250), pack-reused 13538
+Receiving objects: 100% (19274/19274), 10.16 MiB | 12.22 MiB/s, done.
+Resolving deltas: 100% (13083/13083), done.
+
+```
+
+Переходим каталог и развертываем контейнеры:
+
+<details>
+<summary>Вывод текста</summary>
+
+ubuntu@master:~/kube-prometheus$ sudo kubectl apply --server-side -f manifests/setup
+customresourcedefinition.apiextensions.k8s.io/alertmanagerconfigs.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/alertmanagers.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/podmonitors.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/probes.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/prometheuses.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/prometheusagents.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/prometheusrules.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/scrapeconfigs.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/servicemonitors.monitoring.coreos.com serverside-applied
+customresourcedefinition.apiextensions.k8s.io/thanosrulers.monitoring.coreos.com serverside-applied
+namespace/monitoring serverside-applied
+
+ubuntu@master:~/kube-prometheus$ sudo kubectl apply -f manifests/
+alertmanager.monitoring.coreos.com/main created
+networkpolicy.networking.k8s.io/alertmanager-main created
+poddisruptionbudget.policy/alertmanager-main created
+prometheusrule.monitoring.coreos.com/alertmanager-main-rules created
+secret/alertmanager-main created
+service/alertmanager-main created
+serviceaccount/alertmanager-main created
+servicemonitor.monitoring.coreos.com/alertmanager-main created
+clusterrole.rbac.authorization.k8s.io/blackbox-exporter created
+clusterrolebinding.rbac.authorization.k8s.io/blackbox-exporter created
+configmap/blackbox-exporter-configuration created
+deployment.apps/blackbox-exporter created
+networkpolicy.networking.k8s.io/blackbox-exporter created
+service/blackbox-exporter created
+serviceaccount/blackbox-exporter created
+servicemonitor.monitoring.coreos.com/blackbox-exporter created
+secret/grafana-config created
+secret/grafana-datasources created
+configmap/grafana-dashboard-alertmanager-overview created
+configmap/grafana-dashboard-apiserver created
+configmap/grafana-dashboard-cluster-total created
+configmap/grafana-dashboard-controller-manager created
+configmap/grafana-dashboard-grafana-overview created
+configmap/grafana-dashboard-k8s-resources-cluster created
+configmap/grafana-dashboard-k8s-resources-multicluster created
+configmap/grafana-dashboard-k8s-resources-namespace created
+configmap/grafana-dashboard-k8s-resources-node created
+configmap/grafana-dashboard-k8s-resources-pod created
+configmap/grafana-dashboard-k8s-resources-workload created
+configmap/grafana-dashboard-k8s-resources-workloads-namespace created
+configmap/grafana-dashboard-kubelet created
+configmap/grafana-dashboard-namespace-by-pod created
+configmap/grafana-dashboard-namespace-by-workload created
+configmap/grafana-dashboard-node-cluster-rsrc-use created
+configmap/grafana-dashboard-node-rsrc-use created
+configmap/grafana-dashboard-nodes-darwin created
+configmap/grafana-dashboard-nodes created
+configmap/grafana-dashboard-persistentvolumesusage created
+configmap/grafana-dashboard-pod-total created
+configmap/grafana-dashboard-prometheus-remote-write created
+configmap/grafana-dashboard-prometheus created
+configmap/grafana-dashboard-proxy created
+configmap/grafana-dashboard-scheduler created
+configmap/grafana-dashboard-workload-total created
+configmap/grafana-dashboards created
+deployment.apps/grafana created
+networkpolicy.networking.k8s.io/grafana created
+prometheusrule.monitoring.coreos.com/grafana-rules created
+service/grafana created
+serviceaccount/grafana created
+servicemonitor.monitoring.coreos.com/grafana created
+prometheusrule.monitoring.coreos.com/kube-prometheus-rules created
+clusterrole.rbac.authorization.k8s.io/kube-state-metrics created
+clusterrolebinding.rbac.authorization.k8s.io/kube-state-metrics created
+deployment.apps/kube-state-metrics created
+networkpolicy.networking.k8s.io/kube-state-metrics created
+prometheusrule.monitoring.coreos.com/kube-state-metrics-rules created
+service/kube-state-metrics created
+serviceaccount/kube-state-metrics created
+servicemonitor.monitoring.coreos.com/kube-state-metrics created
+prometheusrule.monitoring.coreos.com/kubernetes-monitoring-rules created
+servicemonitor.monitoring.coreos.com/kube-apiserver created
+servicemonitor.monitoring.coreos.com/coredns created
+servicemonitor.monitoring.coreos.com/kube-controller-manager created
+servicemonitor.monitoring.coreos.com/kube-scheduler created
+servicemonitor.monitoring.coreos.com/kubelet created
+clusterrole.rbac.authorization.k8s.io/node-exporter created
+clusterrolebinding.rbac.authorization.k8s.io/node-exporter created
+daemonset.apps/node-exporter created
+networkpolicy.networking.k8s.io/node-exporter created
+prometheusrule.monitoring.coreos.com/node-exporter-rules created
+service/node-exporter created
+serviceaccount/node-exporter created
+servicemonitor.monitoring.coreos.com/node-exporter created
+clusterrole.rbac.authorization.k8s.io/prometheus-k8s created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-k8s created
+networkpolicy.networking.k8s.io/prometheus-k8s created
+poddisruptionbudget.policy/prometheus-k8s created
+prometheus.monitoring.coreos.com/k8s created
+prometheusrule.monitoring.coreos.com/prometheus-k8s-prometheus-rules created
+rolebinding.rbac.authorization.k8s.io/prometheus-k8s-config created
+rolebinding.rbac.authorization.k8s.io/prometheus-k8s created
+rolebinding.rbac.authorization.k8s.io/prometheus-k8s created
+rolebinding.rbac.authorization.k8s.io/prometheus-k8s created
+role.rbac.authorization.k8s.io/prometheus-k8s-config created
+role.rbac.authorization.k8s.io/prometheus-k8s created
+role.rbac.authorization.k8s.io/prometheus-k8s created
+role.rbac.authorization.k8s.io/prometheus-k8s created
+service/prometheus-k8s created
+serviceaccount/prometheus-k8s created
+servicemonitor.monitoring.coreos.com/prometheus-k8s created
+apiservice.apiregistration.k8s.io/v1beta1.metrics.k8s.io created
+clusterrole.rbac.authorization.k8s.io/prometheus-adapter created
+clusterrole.rbac.authorization.k8s.io/system:aggregated-metrics-reader created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-adapter created
+clusterrolebinding.rbac.authorization.k8s.io/resource-metrics:system:auth-delegator created
+clusterrole.rbac.authorization.k8s.io/resource-metrics-server-resources created
+configmap/adapter-config created
+deployment.apps/prometheus-adapter created
+networkpolicy.networking.k8s.io/prometheus-adapter created
+poddisruptionbudget.policy/prometheus-adapter created
+rolebinding.rbac.authorization.k8s.io/resource-metrics-auth-reader created
+service/prometheus-adapter created
+serviceaccount/prometheus-adapter created
+servicemonitor.monitoring.coreos.com/prometheus-adapter created
+clusterrole.rbac.authorization.k8s.io/prometheus-operator created
+clusterrolebinding.rbac.authorization.k8s.io/prometheus-operator created
+deployment.apps/prometheus-operator created
+networkpolicy.networking.k8s.io/prometheus-operator created
+prometheusrule.monitoring.coreos.com/prometheus-operator-rules created
+service/prometheus-operator created
+serviceaccount/prometheus-operator created
+servicemonitor.monitoring.coreos.com/prometheus-operator created
+</details>
+
+```
+ubuntu@master:~/kube-prometheus$ sudo kubectl get po -n monitoring -o wide
+NAME                                   READY   STATUS    RESTARTS   AGE     IP               NODE     NOMINATED NODE   READINESS GATES
+alertmanager-main-0                    2/2     Running   0          3m2s    10.233.102.132   node1    <none>           <none>
+alertmanager-main-1                    2/2     Running   0          3m2s    10.233.75.6      node2    <none>           <none>
+alertmanager-main-2                    2/2     Running   0          3m2s    10.233.102.133   node1    <none>           <none>
+blackbox-exporter-76b5c44577-t9rql     3/3     Running   0          3m48s   10.233.75.2      node2    <none>           <none>
+grafana-684ffd8b85-gcrbn               1/1     Running   0          3m47s   10.233.75.3      node2    <none>           <none>
+kube-state-metrics-cff77f89d-6wwg6     3/3     Running   0          3m46s   10.233.102.130   node1    <none>           <none>
+node-exporter-rs29m                    2/2     Running   0          3m46s   10.0.3.12        node2    <none>           <none>
+node-exporter-s4jlr                    2/2     Running   0          3m46s   10.0.2.11        node1    <none>           <none>
+node-exporter-xxzzx                    2/2     Running   0          3m46s   10.0.1.10        master   <none>           <none>
+prometheus-adapter-74894c5547-5nh2s    1/1     Running   0          3m45s   10.233.102.131   node1    <none>           <none>
+prometheus-adapter-74894c5547-nz98s    1/1     Running   0          3m45s   10.233.75.4      node2    <none>           <none>
+prometheus-k8s-0                       2/2     Running   0          2m58s   10.233.75.7      node2    <none>           <none>
+prometheus-k8s-1                       2/2     Running   0          2m58s   10.233.102.134   node1    <none>           <none>
+prometheus-operator-5f58f7c596-ksfmk   2/2     Running   0          3m45s   10.233.75.5      node2    <none>           <none>
+```
+
+Для доступа к интерфейсу вне кластера изменим сетевую политику:
+
+```
+ubuntu@master:~$ sudo kubectl -n monitoring apply -f manifests/grafana-service.yml
+service/grafana configured
+networkpolicy.networking.k8s.io/grafana configured
+```
+
+Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
+
+![Ссылка 14](https://github.com/Firewal7/diplom-netology/blob/main/images/14.grafana.login.jpg)
+
+![Ссылка 15](https://github.com/Firewal7/diplom-netology/blob/main/images/15.grafana.resurce.jpg)
+
+## Далее я развернём наше приложение в кластере Kubernetes.
+
+[helm-chart]()
+
+```
+ubuntu@master:~/application$ sudo helm install application /home/ubuntu/application
+NAME: application
+LAST DEPLOYED: Thu Feb  8 16:00:54 2024
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+
+ubuntu@master:~/application$ helm list
+NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
+application     default         1               2024-02-08 16:00:54.381983702 +0000 UTC deployed        application-0.1.0       1.16.0
+
+```
+
+![Ссылка 16](https://github.com/Firewal7/diplom-netology/blob/main/images/16.deploy.jpg)
+
+![Ссылка 17](https://github.com/Firewal7/diplom-netology/blob/main/images/16.deploy.wide.jpg)
+
+Переходим по IP адресу node2 на котором задеплоили (http://51.250.38.116:30201) порт 30201 мы задали в service.yaml 
+
+![Ссылка 18](https://github.com/Firewal7/diplom-netology/blob/main/images/18.deploy.applic.jpg)
+
 
 ### Установка и настройка CI/CD
 
