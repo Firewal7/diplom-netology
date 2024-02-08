@@ -352,13 +352,15 @@ prometheus-operator-5f58f7c596-ksfmk   2/2     Running   0          3m45s   10.2
 ```
 
 Для доступа к интерфейсу вне кластера изменим сетевую политику:
-
 ```
+
+[manifests](https://github.com/Firewal7/diplom-netology/tree/main/manifests)
+
 ubuntu@master:~$ sudo kubectl -n monitoring apply -f manifests/grafana-service.yml
 service/grafana configured
 networkpolicy.networking.k8s.io/grafana configured
-```
 
+```
 Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
 
 ![Ссылка 14](https://github.com/Firewal7/diplom-netology/blob/main/images/14.grafana.login.jpg)
