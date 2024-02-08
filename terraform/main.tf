@@ -72,7 +72,11 @@ resource "yandex_compute_instance" "master" {
       "sudo apt-get install -y python3-pip",
       "sudo pip3 install ansible",
       "chmod 600 /home/ubuntu/.ssh/new.rsa",
-      "ansible-playbook -i /home/ubuntu/inventory/inventory.ini --become --become-user=root /home/ubuntu/playbooks/cluster.yml",
+      "ansible-playbook -i /home/ubuntu/inventory/inventory.ini --become --become-user=root /home/ubuntu/playbooks/cluster.yml",  # Установка кластера через kubespray
+      "sleep 200",  # Задержка в 200 секунд
+      "ansible-playbook -i /home/ubuntu/inventory/inventory.ini --become --become-user=root /home/ubuntu/playbooks/teamcity.yml",  # Установка teamcity-server; teamcity-agent
+      "sleep 120",  # Задержка в 120 секунд
+      "ansible-playbook -i /home/ubuntu/inventory/inventory.ini --become --become-user=root /home/ubuntu/playbooks/postgresql.yml",  # Установка postgresql на ВМ teamcity-server
     ]
   }
 }

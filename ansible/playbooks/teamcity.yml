@@ -1,7 +1,34 @@
----
 - name: Deploy TeamCity Server
   hosts: teamcity-server
   tasks:
+    
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+
+    - name: Start and enable Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Install dependencies for Docker
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker-compose
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+
     - name: Install TeamCity server
       docker_container:
         name: teamcity-server
@@ -9,26 +36,54 @@
         state: started
         ports:
           - "8111:8111"
+
 - name: Deploy TeamCity Agent
   hosts: teamcity-agent
   vars:
     agent_folder_path: "/home/ubuntu/teamcity_agent/conf"
   tasks:
-    - name: Install TeamCity Agent
-      block:
-        - name: Create Teamcity Agent folder
-          ansible.builtin.file:
-            path: "{{ agent_folder_path }}"
-            state: directory
-            mode: "0777"
-        - name: Install TeamCity Agent from Docker image
-          docker_container:
-            name: teamcity-agent
-            image: jetbrains/teamcity-agent:2023.05.4-linux-sudo
-            privileged: true
-            state: started
-            volumes:
-              - "{{ agent_folder_path }}:/data/teamcity_agent/conf"
-            env:
-              SERVER_URL: "10.0.1.44:8111"
-              DOCKER_IN_DOCKER: "start"
+    - name: Update apt package cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        name: docker.io
+        state: present
+
+    - name: Start and enable Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Install dependencies for Docker
+      ansible.builtin.apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - docker-compose
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg-agent
+        - software-properties-common
+
+    - name: Create Teamcity Agent folder
+      ansible.builtin.file:
+        path: "{{ agent_folder_path }}"
+        state: directory
+        mode: "0777"
+
+    - name: Install TeamCity Agent from Docker image
+      docker_container:
+        name: teamcity-agent
+        image: jetbrains/teamcity-agent:2023.05.4-linux-sudo
+        privileged: true
+        state: started
+        restart_policy: always  # Добавляем параметр перезапуска контейнера
+        volumes:
+          - "{{ agent_folder_path }}:/data/teamcity_agent/conf"
+        env:
+          SERVER_URL: "10.0.1.44:8111"
+          DOCKER_IN_DOCKER: "start"

@@ -43,12 +43,32 @@
         executable: pip3
       become: true
       
+    # Add TeamCity Server to /etc/hosts
+    - name: Add entry to /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        mode: 'a+r,a+w,a+x'
+        line: "{{ server_ip }} teamcity-server"
+        state: present
+      vars:
+        server_ip: "10.0.1.44"
+            
+    # Add TeamCity Agent to /etc/hosts        
+    - name: Add entry to /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        mode: 'a+r,a+w,a+x'
+        line: "{{ server_ip }} teamcity-agent"
+        state: present
+      vars:
+        server_ip: "10.0.1.34"
+            
     # Копирование файла инвентаря
     - name: Copy inventory file
       command: cp -rfp /home/ubuntu/kubespray/inventory/sample /home/ubuntu/kubespray/inventory/mycluster
       become: true
 
-    # Указываем внутрение IP адреса в конфиг
+    # Указываем внутренние IP адреса в конфиг
     - name: Set fact for IPS
       set_fact:
         IPS: ["10.0.1.10", "10.0.1.11", "10.0.1.12"]
