@@ -198,7 +198,7 @@ Resolving deltas: 100% (13083/13083), done.
 
 ```
 
-#### Переходим каталог и развертываем контейнеры:
+#### Переходим в каталог с kube-prometheus и развертываем контейнеры:
 
 <details>
 <summary>Вывод текста</summary>
@@ -352,10 +352,10 @@ prometheus-operator-5f58f7c596-ksfmk   2/2     Running   0          3m45s   10.2
 ```
 
 #### Для доступа к интерфейсу изменим сетевую политику:
-```
 
 [manifests](https://github.com/Firewal7/diplom-netology/tree/main/manifests)
 
+```
 ubuntu@master:~$ sudo kubectl -n monitoring apply -f manifests/grafana-service.yml
 service/grafana configured
 networkpolicy.networking.k8s.io/grafana configured
