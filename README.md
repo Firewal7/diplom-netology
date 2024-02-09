@@ -37,9 +37,9 @@
 
 ## Решение
 
-### Конфигурация [Terraform](https://github.com/Firewal7/diplom-netology)
+### Конфигурация [Terraform](https://github.com/Firewal7/diplom-netology/tree/main/terraform) 
 
-1. Запускаем команду terraform apply. 
+1. Запускаем команду terraform apply. Все виртуальные машины Прерываемые, возможно упадут какие то сервисы. 
 
 Создаётся вся облачная инфраструктура, дополнительно выполняется последовательно три playbook-а на ВМ master:
 
@@ -60,6 +60,8 @@
 ![Ссылка 3](https://github.com/Firewal7/diplom-netology/blob/main/images/3.console.jpg)
 
 ![Ссылка 4](https://github.com/Firewal7/diplom-netology/blob/main/images/4.vm.jpg)
+
+![Ссылка 4.1](https://github.com/Firewal7/diplom-netology/blob/main/images/4.1.servic.jpg)
 
 ### Остаётся загрузить файл состояния tdstate, после развёртывания всей инфраструктуры:
 
@@ -361,7 +363,7 @@ service/grafana configured
 networkpolicy.networking.k8s.io/grafana configured
 
 ```
-#### Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
+#### Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.216:30001) Логи стандартные admin admin.
 
 ![Ссылка 14](https://github.com/Firewal7/diplom-netology/blob/main/images/14.grafana.login.jpg)
 
@@ -390,7 +392,7 @@ applications    default         1               2024-02-09 08:12:22.038079963 +0
 
 ![Ссылка 17](https://github.com/Firewal7/diplom-netology/blob/main/images/17.deploy.wide.jpg)
 
-Переходим по IP адресу node2 на котором задеплоили (http://51.250.38.116:30201) порт 30201 мы задали в service.yaml 
+Переходим по IP адресу node2 на котором задеплоили (http://51.250.38.216:30201) порт 30201 мы задали в service.yaml 
 
 ![Ссылка 18](https://github.com/Firewal7/diplom-netology/blob/main/images/18.deploy.appl.jpg)
 
@@ -580,7 +582,7 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 
 6. Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.
 
-- [Applications](http://51.250.38.116:30201)
-- [Grafana](http://51.250.38.116:30001) Лог: admin, Пасс: admin
+- [Applications](http://51.250.38.216:30201)
+- [Grafana](http://51.250.38.216:30001) Лог: admin, Пасс: admin
 
 7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
