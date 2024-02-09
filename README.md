@@ -53,7 +53,7 @@
 
 ![Ссылка 1](https://github.com/Firewal7/diplom-netology/blob/main/images/1.init.jpg)
 
-Выполним команду terraform apply:
+### Выполним команду terraform apply:
 
 ![Ссылка 2](https://github.com/Firewal7/diplom-netology/blob/main/images/2.apply.jpg)
 
@@ -63,18 +63,18 @@
 
 ## Остаётся загрузить файл состояния tdstate, после развёртывания всей инфраструктуры:
 
-При развёртывании облачной инфраструктуры в файле providers.tf закомментирован раздел backend. После развёртывания мы его откомментируем, что бы загрузить файл состояния. 
+### При развёртывании облачной инфраструктуры в файле providers.tf закомментирован раздел backend. После развёртывания мы его откомментируем, что бы загрузить файл состояния. 
 
 ![Ссылка 5](https://github.com/Firewal7/diplom-netology/blob/main/images/5.provider.jpg)
 
-Выполнил команды в оболочке:
+### Выполнил команды в оболочке:
 
 ```
 export ACCESS_KEY="ваш_ключ_доступа"
 export SECRET_KEY="ваш_секретный_ключ"
 ```
 
-Затем выполняем команды: 
+### Затем выполняем команды: 
 
 ```
 terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"
@@ -110,9 +110,9 @@ terraform apply -auto-approve
 
 ## Решение:
 
-Этот пункт готов совместно с развёрнтыванием инфраструктуры, используя kubespray.
+### Этот пункт готов совместно с развёрнтыванием инфраструктуры, используя kubespray.
 
-Зайдём на master и проверим:
+### Зайдём на master и проверим:
 
 ![Ссылка 8](https://github.com/Firewal7/diplom-netology/blob/main/images/8.master.jpg)
 
@@ -182,9 +182,9 @@ terraform apply -auto-approve
 
 ## Решение:
 
-Развернём систему мониторинга с помощью Kube-Prometheus.
+### Развернём систему мониторинга с помощью Kube-Prometheus.
 
-Клонируем репозиторий:
+### Клонируем репозиторий:
 
 ```
 ubuntu@master:~$ git clone https://github.com/prometheus-operator/kube-prometheus.git
@@ -198,7 +198,7 @@ Resolving deltas: 100% (13083/13083), done.
 
 ```
 
-Переходим каталог и развертываем контейнеры:
+### Переходим каталог и развертываем контейнеры:
 
 <details>
 <summary>Вывод текста</summary>
@@ -351,7 +351,7 @@ prometheus-k8s-1                       2/2     Running   0          2m58s   10.2
 prometheus-operator-5f58f7c596-ksfmk   2/2     Running   0          3m45s   10.233.75.5      node2    <none>           <none>
 ```
 
-Для доступа к интерфейсу вне кластера изменим сетевую политику:
+### Для доступа к интерфейсу изменим сетевую политику:
 ```
 
 [manifests](https://github.com/Firewal7/diplom-netology/tree/main/manifests)
@@ -361,7 +361,7 @@ service/grafana configured
 networkpolicy.networking.k8s.io/grafana configured
 
 ```
-Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
+### Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
 
 ![Ссылка 14](https://github.com/Firewal7/diplom-netology/blob/main/images/14.grafana.login.jpg)
 
@@ -372,17 +372,17 @@ networkpolicy.networking.k8s.io/grafana configured
 [helm-chart](https://github.com/Firewal7/diplom-netology/tree/main/helm)
 
 ```
-ubuntu@master:~/application$ sudo helm install application /home/ubuntu/application
-NAME: application
-LAST DEPLOYED: Thu Feb  8 16:00:54 2024
+ubuntu@master:~/application$ sudo helm install applications /home/ubuntu/applications
+NAME: applications
+LAST DEPLOYED: Fri Feb  9 08:12:22 2024
 NAMESPACE: default
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 
-ubuntu@master:~/application$ helm list
+ubuntu@master:~/application$ sudo helm list
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
-application     default         1               2024-02-08 16:00:54.381983702 +0000 UTC deployed        application-0.1.0       1.16.0
+applications    default         1               2024-02-09 08:12:22.038079963 +0000 UTC deployed        helm-chart-0.1.0        1.0.0
 
 ```
 
@@ -394,6 +394,109 @@ application     default         1               2024-02-08 16:00:54.381983702 +0
 
 ![Ссылка 18](https://github.com/Firewal7/diplom-netology/blob/main/images/18.deploy.appl.jpg)
 
+## Разместил приложение в репозитории Helm:
+
+```
+### Сборка архива:
+
+ubuntu@master:~/helm$ sudo helm package /home/ubuntu/helm/applications -d chart
+Successfully packaged chart and saved it to: chart/applications-1.0.0.tgz
+
+### Обновляем индексный файл:
+
+ubuntu@master:~/helm$ sudo helm repo index chart
+
+ubuntu@master:~/helm$ ls -la
+total 16
+drwxrwxr-x  4 ubuntu ubuntu 4096 Feb  9 09:04 .
+drwxr-x--- 14 ubuntu ubuntu 4096 Feb  9 08:07 ..
+drwxr-xr-x  3 ubuntu ubuntu 4096 Feb  9 08:53 applications
+drwxr-xr-x  2 root   root   4096 Feb  9 09:05 chart
+
+ubuntu@master:~/helm/chart$ ls -la
+total 16
+drwxr-xr-x 2 root   root   4096 Feb  9 09:05 .
+drwxrwxr-x 4 ubuntu ubuntu 4096 Feb  9 09:04 ..
+-rw-r--r-- 1 root   root    802 Feb  9 09:04 applications-1.0.0.tgz
+-rw-r--r-- 1 root   root    469 Feb  9 09:05 index.yaml
+```
+
+### Загрузим helm в ChartMuseum:
+
+URL: https://sofin.baltorepo.com/application/application/helm/
+
+<details>
+<summary>Вывод текста</summary>
+
+ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45acf35114d16b87fcf16f705b6" --form "chart=@applications-1.0.0.tgz"  https://sofin.baltorepo.com/application/applications/upload/
+*   Trying 178.128.157.133:443...
+* Connected to sofin.baltorepo.com (178.128.157.133) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+*  CAfile: /etc/ssl/certs/ca-certificates.crt
+*  CApath: /etc/ssl/certs
+* TLSv1.0 (OUT), TLS header, Certificate Status (22):
+* TLSv1.3 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.3 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS header, Certificate Status (22):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS header, Finished (20):
+* TLSv1.2 (OUT), TLS change cipher, Change cipher spec (1):
+* TLSv1.2 (OUT), TLS header, Certificate Status (22):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS header, Finished (20):
+* TLSv1.2 (IN), TLS header, Certificate Status (22):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES256-GCM-SHA384
+* ALPN, server accepted to use http/1.1
+* Server certificate:
+*  subject: CN=*.baltorepo.com
+*  start date: Dec 14 23:15:29 2023 GMT
+*  expire date: Mar 13 23:15:28 2024 GMT
+*  subjectAltName: host "sofin.baltorepo.com" matched cert's "*.baltorepo.com"
+*  issuer: C=US; O=Let's Encrypt; CN=R3
+*  SSL certificate verify ok.
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+> POST /application/applications/upload/ HTTP/1.1
+> Host: sofin.baltorepo.com
+> User-Agent: curl/7.81.0
+> Accept: */*
+> Authorization: Bearer b45acf35114d16b87fcf16f705b6
+> Content-Length: 1017
+> Content-Type: multipart/form-data; boundary=------------------------ead0baa68013df4c
+>
+* TLSv1.2 (OUT), TLS header, Supplemental data (23):
+* We are completely uploaded and fine
+* TLSv1.2 (IN), TLS header, Supplemental data (23):
+* Mark bundle as not supporting multiuse
+< HTTP/1.1 200 OK
+< Server: nginx/1.18.0 (Ubuntu)
+< Date: Fri, 09 Feb 2024 09:07:10 GMT
+< Content-Type: application/json
+< Content-Length: 192
+< Connection: keep-alive
+< Vary: Accept
+< Allow: POST, OPTIONS
+< X-Frame-Options: SAMEORIGIN
+<
+* Connection #0 to host sofin.baltorepo.com left intact
+{"success":true,"message":"","package_site_url":"/application/applications/packages/applications/releases/1.0.0/","package_api_url":"/api/v1/project/44/repository/62/helmchart/24/release/52/"}
+
+</details>
+
+
+![Ссылка 19](https://github.com/Firewal7/diplom-netology/blob/main/images/19.chartmuseum.jpg)
+
+### Добавим в Artifacthub:
+
+![Ссылка 20](https://github.com/Firewal7/diplom-netology/blob/main/images/20.artifacthub.jpg)
 
 ### Установка и настройка CI/CD
 
@@ -425,8 +528,8 @@ application     default         1               2024-02-08 16:00:54.381983702 +0
 
 ## Решение:
 
-Совместно с развёрткой облачной инфраструктуры развернул две ВМ teamcity-server и teamcity-agent и прогнав playbook для их деплоя. 
+Совместно с развёрткой облачной инфраструктуры развернул две ВМ teamcity-server и teamcity-agent, palybook-и развернули на машинах сервер и агент teamcity с postgresgl.  
 
-
+Зайдёт по адресу Teamcity 51.250.83.252:8111
 
 

@@ -1,3 +1,0 @@
-container:
-  image: bbb8c2e28d7d/application:1.0
-  pullPolicy: IfNotPresent

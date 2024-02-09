@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  applications:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2024-02-09T09:05:11.232158541Z"
+    description: My Helm chart for Kubernetes
+    digest: 43cc3f6ef914991a80adc5a979a3a6f7bd59561a6f65a7006133479035360981
+    maintainers:
+    - email: SofinRA@yandex.ru
+      name: Sofin Roman
+    name: applications
+    type: application
+    urls:
+    - applications-1.0.0.tgz
+    version: 1.0.0
+generated: "2024-02-09T09:05:11.231651148Z"
