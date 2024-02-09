@@ -137,23 +137,23 @@ terraform apply -auto-approve
 
 ## Решение:
 
-Подготовил приложение.
+#### Подготовил приложение.
 
-[application](https://github.com/Firewal7/diplom-application.git)
+[index.html](https://github.com/Firewal7/diplom-netology/blob/main/applications/index.html)
 
-[DockerHub](https://hub.docker.com/repository/docker/bbb8c2e28d7d/applications/general)
+[Dockerfile](https://github.com/Firewal7/diplom-netology/blob/main/applications/Dockerfile)
 
-Соберём образ командой: docker build -t bbb8c2e28d7d/applications:1.0 .
+#### Соберём образ командой: docker build -t bbb8c2e28d7d/applications:1.0 .
 
 ![Ссылка 9](https://github.com/Firewal7/diplom-netology/blob/main/images/9.build.jpg)
 
-Запускаем контейнер: docker run -d -p 8080:80 bbb8c2e28d7d/applications:1.0
+#### Запускаем контейнер: docker run -d -p 8080:80 bbb8c2e28d7d/applications:1.0
 
 ![Ссылка 10](https://github.com/Firewal7/diplom-netology/blob/main/images/10.run.jpg)
 
 ![Ссылка 11](https://github.com/Firewal7/diplom-netology/blob/main/images/11.brauzer.jpg)
 
-Загружаем в Dockerhub: docker push bbb8c2e28d7d/applications:1.0
+#### Загружаем в Dockerhub: docker push bbb8c2e28d7d/applications:1.0
 
 ![Ссылка 12](https://github.com/Firewal7/diplom-netology/blob/main/images/12.push.jpg)
 
@@ -372,7 +372,7 @@ networkpolicy.networking.k8s.io/grafana configured
 [helm-chart](https://github.com/Firewal7/diplom-netology/tree/main/helm)
 
 ```
-ubuntu@master:~/application$ sudo helm install applications /home/ubuntu/applications
+ubuntu@master:~/applications$ sudo helm install applications /home/ubuntu/applications
 NAME: applications
 LAST DEPLOYED: Fri Feb  9 08:12:22 2024
 NAMESPACE: default
@@ -380,7 +380,7 @@ STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 
-ubuntu@master:~/application$ sudo helm list
+ubuntu@master:~/applications$ sudo helm list
 NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART                   APP VERSION
 applications    default         1               2024-02-09 08:12:22.038079963 +0000 UTC deployed        helm-chart-0.1.0        1.0.0
 
