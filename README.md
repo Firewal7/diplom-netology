@@ -44,16 +44,16 @@
 Создаётся вся облачная инфраструктура, дополнительно выполняется последовательно три playbook-а на ВМ master:
 
 
-### Первый на развертывание кластера Kubernetes с помощью Kubespray. (master, node1, node2).
-### Второй для установки TeamCity на сервере и агенте. (Для CI/CD выбрал TeamCity).
-### Третий устанавливает Postgresql на ВМ teamcity-server. 
+#### Первый на развертывание кластера Kubernetes с помощью Kubespray. (master, node1, node2).
+#### Второй для установки TeamCity на сервере и агенте. (Для CI/CD выбрал TeamCity).
+#### Третий устанавливает Postgresql на ВМ teamcity-server. 
 
 
 Выполним команду terraform init:
 
 ![Ссылка 1](https://github.com/Firewal7/diplom-netology/blob/main/images/1.init.jpg)
 
-### Выполним команду terraform apply:
+#### Выполним команду terraform apply:
 
 ![Ссылка 2](https://github.com/Firewal7/diplom-netology/blob/main/images/2.apply.jpg)
 
@@ -61,20 +61,20 @@
 
 ![Ссылка 4](https://github.com/Firewal7/diplom-netology/blob/main/images/4.vm.jpg)
 
-## Остаётся загрузить файл состояния tdstate, после развёртывания всей инфраструктуры:
+### Остаётся загрузить файл состояния tdstate, после развёртывания всей инфраструктуры:
 
-### При развёртывании облачной инфраструктуры в файле providers.tf закомментирован раздел backend. После развёртывания мы его откомментируем, что бы загрузить файл состояния. 
+#### При развёртывании облачной инфраструктуры в файле providers.tf закомментирован раздел backend. После развёртывания мы его откомментируем, что бы загрузить файл состояния. 
 
 ![Ссылка 5](https://github.com/Firewal7/diplom-netology/blob/main/images/5.provider.jpg)
 
-### Выполнил команды в оболочке:
+#### Выполнил команды в оболочке:
 
 ```
 export ACCESS_KEY="ваш_ключ_доступа"
 export SECRET_KEY="ваш_секретный_ключ"
 ```
 
-### Затем выполняем команды: 
+#### Затем выполняем команды: 
 
 ```
 terraform init -backend-config="access_key=$ACCESS_KEY" -backend-config="secret_key=$SECRET_KEY"
@@ -112,11 +112,11 @@ terraform apply -auto-approve
 
 ### Этот пункт готов совместно с развёрнтыванием инфраструктуры, используя kubespray.
 
-### Зайдём на master и проверим:
+#### Зайдём на master и проверим:
 
 ![Ссылка 8](https://github.com/Firewal7/diplom-netology/blob/main/images/8.master.jpg)
 
-### Создание тестового приложения
+#### Создание тестового приложения
 
 Для перехода к следующему этапу необходимо подготовить тестовое приложение, эмулирующее основное приложение разрабатываемое вашей компанией.
 
@@ -139,21 +139,21 @@ terraform apply -auto-approve
 
 Подготовил приложение.
 
-[Dockerfile](https://github.com/Firewal7/diplom-netology/blob/main/application/Dockerfile)
+[application](https://github.com/Firewal7/diplom-application.git)
 
-[index.html](https://github.com/Firewal7/diplom-netology/blob/main/application/index.html)
+[DockerHub](https://hub.docker.com/repository/docker/bbb8c2e28d7d/applications/general)
 
-Соберём образ командой: docker build -t bbb8c2e28d7d/application:1.0 .
+Соберём образ командой: docker build -t bbb8c2e28d7d/applications:1.0 .
 
 ![Ссылка 9](https://github.com/Firewal7/diplom-netology/blob/main/images/9.build.jpg)
 
-Запускаем контейнер: docker run bbb8c2e28d7d/application:1.0
+Запускаем контейнер: docker run -d -p 8080:80 bbb8c2e28d7d/applications:1.0
 
 ![Ссылка 10](https://github.com/Firewal7/diplom-netology/blob/main/images/10.run.jpg)
 
 ![Ссылка 11](https://github.com/Firewal7/diplom-netology/blob/main/images/11.brauzer.jpg)
 
-Загружаем в Dockerhub: docker push bbb8c2e28d7d/application:1.0
+Загружаем в Dockerhub: docker push bbb8c2e28d7d/applications:1.0
 
 ![Ссылка 12](https://github.com/Firewal7/diplom-netology/blob/main/images/12.push.jpg)
 
@@ -184,7 +184,7 @@ terraform apply -auto-approve
 
 ### Развернём систему мониторинга с помощью Kube-Prometheus.
 
-### Клонируем репозиторий:
+#### Клонируем репозиторий:
 
 ```
 ubuntu@master:~$ git clone https://github.com/prometheus-operator/kube-prometheus.git
@@ -198,7 +198,7 @@ Resolving deltas: 100% (13083/13083), done.
 
 ```
 
-### Переходим каталог и развертываем контейнеры:
+#### Переходим каталог и развертываем контейнеры:
 
 <details>
 <summary>Вывод текста</summary>
@@ -351,7 +351,7 @@ prometheus-k8s-1                       2/2     Running   0          2m58s   10.2
 prometheus-operator-5f58f7c596-ksfmk   2/2     Running   0          3m45s   10.233.75.5      node2    <none>           <none>
 ```
 
-### Для доступа к интерфейсу изменим сетевую политику:
+#### Для доступа к интерфейсу изменим сетевую политику:
 ```
 
 [manifests](https://github.com/Firewal7/diplom-netology/tree/main/manifests)
@@ -361,7 +361,7 @@ service/grafana configured
 networkpolicy.networking.k8s.io/grafana configured
 
 ```
-### Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
+#### Теперь зайти в Grafana можно по адресу node2 (http://51.250.38.116:30001) Логи стандартные admin admin.
 
 ![Ссылка 14](https://github.com/Firewal7/diplom-netology/blob/main/images/14.grafana.login.jpg)
 
@@ -397,12 +397,12 @@ applications    default         1               2024-02-09 08:12:22.038079963 +0
 ## Разместил приложение в репозитории Helm:
 
 ```
-### Сборка архива:
+Сборка архива:
 
 ubuntu@master:~/helm$ sudo helm package /home/ubuntu/helm/applications -d chart
 Successfully packaged chart and saved it to: chart/applications-1.0.0.tgz
 
-### Обновляем индексный файл:
+Обновляем индексный файл:
 
 ubuntu@master:~/helm$ sudo helm repo index chart
 
@@ -421,7 +421,7 @@ drwxrwxr-x 4 ubuntu ubuntu 4096 Feb  9 09:04 ..
 -rw-r--r-- 1 root   root    469 Feb  9 09:05 index.yaml
 ```
 
-### Загрузим helm в ChartMuseum:
+#### Загрузим helm в ChartMuseum:
 
 URL: https://sofin.baltorepo.com/application/application/helm/
 
@@ -494,7 +494,7 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 
 ![Ссылка 19](https://github.com/Firewal7/diplom-netology/blob/main/images/19.chartmuseum.jpg)
 
-### Добавим в Artifacthub:
+#### Добавим в Artifacthub:
 
 ![Ссылка 20](https://github.com/Firewal7/diplom-netology/blob/main/images/20.artifacthub.jpg)
 
@@ -516,20 +516,71 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
 
 ---
-## Что необходимо для сдачи задания?
-
-1. Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.
-2. Пример pull request с комментариями созданными atlantis'ом или снимки экрана из Terraform Cloud или вашего CI-CD-terraform pipeline.
-3. Репозиторий с конфигурацией ansible, если был выбран способ создания Kubernetes кластера при помощи ansible.
-4. Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.
-5. Репозиторий с конфигурацией Kubernetes кластера.
-6. Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.
-7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
 
 ## Решение:
 
-Совместно с развёрткой облачной инфраструктуры развернул две ВМ teamcity-server и teamcity-agent, palybook-и развернули на машинах сервер и агент teamcity с postgresgl.  
+#### Совместно с развёрткой облачной инфраструктуры развернул две ВМ teamcity-server и teamcity-agent.
+#### Плайбуки развернули на машинах server, agent сам teamcity и установили postgresgl на server.  
 
-Зайдёт по адресу Teamcity 51.250.83.252:8111
+#### Зайдём по адресу Teamcity 51.250.83.252:8111
+
+![Ссылка 21](https://github.com/Firewal7/diplom-netology/blob/main/images/21.startTC.jpg)
+
+#### Данные для инициализации берём с конфига [Postgresgl](https://github.com/Firewal7/diplom-netology/blob/main/ansible/playbooks/postgresql.yml), и устанавливаем предложенный драйвер JDBC.
+
+![Ссылка 22](https://github.com/Firewal7/diplom-netology/blob/main/images/22.initial.jpg)
+
+#### Авторизируем агента:
+
+![Ссылка 23](https://github.com/Firewal7/diplom-netology/blob/main/images/23.agent.jpg)
+
+#### Подключил [Github](https://github.com/Firewal7/diplom-netology-teamcity.git) 
+
+![Ссылка 24](https://github.com/Firewal7/diplom-netology/blob/main/images/24.connect.git.jpg)
+
+#### Подключил [Dockerhub](https://hub.docker.com/repository/docker/bbb8c2e28d7d/applications/general)
+
+![Ссылка 25](https://github.com/Firewal7/diplom-netology/blob/main/images/25.connect.docker.jpg)
+
+#### Подключил в Build Features Docker Support
+
+![Ссылка 26](https://github.com/Firewal7/diplom-netology/blob/main/images/25.connect.docker.jpg)
 
 
+
+
+
+
+
+
+
+
+
+
+## Что необходимо для сдачи задания?
+
+1. Репозиторий с конфигурационными файлами Terraform и готовность продемонстрировать создание всех ресурсов с нуля.
+
+- [Репозиторий с Terraform](https://github.com/Firewal7/diplom-netology/tree/main/terraform)
+
+2. Пример pull request с комментариями созданными atlantis'ом или снимки экрана из Terraform Cloud или вашего CI-CD-terraform pipeline.
+
+3. Репозиторий с конфигурацией ansible, если был выбран способ создания Kubernetes кластера при помощи ansible.
+
+- [Репозиторий с ansible](https://github.com/Firewal7/diplom-netology/tree/main/ansible)
+
+4. Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.
+
+- [Репозиторий с applications](https://github.com/Firewal7/diplom-application.git)
+- [Репозиторий Dockerhub](https://hub.docker.com/repository/docker/bbb8c2e28d7d/applications/general)
+
+5. Репозиторий с конфигурацией Kubernetes кластера.
+
+- [Репозиторий github](https://github.com/Firewal7/diplom-netology)
+
+6. Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.
+
+- [Applications](http://51.250.38.116:30201)
+- [Grafana](http://51.250.38.116:30001) Лог: admin, Пасс: admin
+
+7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
