@@ -89,15 +89,15 @@ resource "yandex_compute_instance" "node1" {
   
   platform_id = "standard-v1"
   resources {
-    cores         = var.public_resources.cores
-    memory        = var.public_resources.memory
-    core_fraction = var.public_resources.core_fraction
+    cores         = var.public_resources_node.cores
+    memory        = var.public_resources_node.memory
+    core_fraction = var.public_resources_node.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = var.public_image
-      size     = var.public_resources.size
+      size     = var.public_resources_node.size
     }
   }
 
@@ -123,15 +123,15 @@ resource "yandex_compute_instance" "node2" {
   
   platform_id = "standard-v1"
   resources {
-    cores         = var.public_resources.cores
-    memory        = var.public_resources.memory
-    core_fraction = var.public_resources.core_fraction
+    cores         = var.public_resources_node.cores
+    memory        = var.public_resources_node.memory
+    core_fraction = var.public_resources_node.core_fraction
   }
 
   boot_disk {
     initialize_params {
       image_id = var.public_image
-      size     = var.public_resources.size
+      size     = var.public_resources_node.size
     }
   }
 

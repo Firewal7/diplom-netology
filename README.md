@@ -546,11 +546,65 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 
 #### Подключил в Build Features Docker Support
 
-![Ссылка 26](https://github.com/Firewal7/diplom-netology/blob/main/images/25.connect.docker.jpg)
+![Ссылка 26](https://github.com/Firewal7/diplom-netology/blob/main/images/26.support.jpg)
+
+### Соберём проект:
+
+#### Этот скрипт предназначен для получения тега коммита и установки его в качестве параметра сборки.
+
+![Ссылка 27](https://github.com/Firewal7/diplom-netology/blob/main/images/27.committag.jpg)
+
+#### Создаём образы Docker:
+
+![Ссылка 28](https://github.com/Firewal7/diplom-netology/blob/main/images/28.docker.jpg)
+
+#### Отправка собранно образа в Dockerhub:
+
+![Ссылка 29](https://github.com/Firewal7/diplom-netology/blob/main/images/29.dockerhub.jpg)
+
+### Проверяем:
+
+#### Пушим изменения в приложении:
+
+```
+root@vm-mint:/home/msi/diplom-netology-teamcity# ls -la
+итого 20
+drwxrwxrwx  3 root root 4096 фев  9 15:28 .
+drwxr-x--- 35 msi  msi  4096 фев 12 11:05 ..
+-rw-rw-r--  1 msi  msi    89 фев  9 15:28 Dockerfile
+drwxr-xr-x  8 root root 4096 фев 12 18:21 .git
+-rw-rw-r--  1 msi  msi   574 фев 12 18:25 index.html
+root@vm-mint:/home/msi/diplom-netology-teamcity# git add *
+root@vm-mint:/home/msi/diplom-netology-teamcity# git commit -m "v5.0.0"
+[main a7fd2e4] v5.0.0
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+root@vm-mint:/home/msi/diplom-netology-teamcity# git push
+Username for 'https://github.com': Firewal7
+Password for 'https://Firewal7@github.com':
+Перечисление объектов: 5, готово.
+Подсчет объектов: 100% (5/5), готово.
+При сжатии изменений используется до 3 потоков
+Сжатие объектов: 100% (3/3), готово.
+Запись объектов: 100% (3/3), 351 байт | 351.00 КиБ/с, готово.
+Всего 3 (изменений 1), повторно использовано 0 (изменений 0), повторно использовано пакетов 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+remote: This repository moved. Please use the new location:
+remote:   https://github.com/Firewal7/diplom-application.git
+To https://github.com/Firewal7/diplom-netology-teamcity.git
+   3931322..a7fd2e4  main -> main
+```
+
+![Ссылка 30](https://github.com/Firewal7/diplom-netology/blob/main/images/30.git.jpg)
+
+![Ссылка 31](https://github.com/Firewal7/diplom-netology/blob/main/images/31.build.jpg)
+
+![Ссылка 32](https://github.com/Firewal7/diplom-netology/blob/main/images/32.buildinfo.jpg)
+
+![Ссылка 33](https://github.com/Firewal7/diplom-netology/blob/main/images/33.dockerhub.jpg)
 
 
 
-
+ 
 
 
 
