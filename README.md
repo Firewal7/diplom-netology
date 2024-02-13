@@ -425,7 +425,7 @@ drwxrwxr-x 4 ubuntu ubuntu 4096 Feb  9 09:04 ..
 
 #### Загрузим helm в ChartMuseum:
 
-URL: https://sofin.baltorepo.com/application/application/helm/
+URL: https://sofin.baltorepo.com/application/applications
 
 <details>
 <summary>Вывод текста</summary>
@@ -521,6 +521,8 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 
 ## Решение:
 
+#### Несколько раз сменились Машины, т.к были прерываемые.
+
 #### Совместно с развёрткой облачной инфраструктуры развернул две ВМ teamcity-server и teamcity-agent.
 #### Плайбуки развернули на машинах server, agent сам teamcity и установили postgresgl на server.  
 
@@ -566,6 +568,8 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 
 #### Пушим изменения в приложении:
 
+[Репозиторий Git](https://github.com/Firewal7/diplom-application.git)
+
 ```
 root@vm-mint:/home/msi/diplom-netology-teamcity# ls -la
 итого 20
@@ -602,16 +606,63 @@ To https://github.com/Firewal7/diplom-netology-teamcity.git
 
 ![Ссылка 33](https://github.com/Firewal7/diplom-netology/blob/main/images/33.dockerhub.jpg)
 
+### Добавим изменение тега, создание helm и выгрузку его в ChartMuseum с последующим апдейтом в кластере Kubernetes:
 
+![Ссылка 34](https://github.com/Firewal7/diplom-netology/blob/main/images/34.gethelm.jpg)
 
- 
+![Ссылка 35](https://github.com/Firewal7/diplom-netology/blob/main/images/35.Changehelm.jpg)
 
+![Ссылка 36](https://github.com/Firewal7/diplom-netology/blob/main/images/36.value.jpg)
 
+### Запустим изменения: 
 
+```
+root@vm-mint:/home/msi/diplom-netology-teamcity# nano index.html
+root@vm-mint:/home/msi/diplom-netology-teamcity# git add *
+root@vm-mint:/home/msi/diplom-netology-teamcity# git commit -m "v37.0.0"
+[main f97de3d] v37.0.0
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+root@vm-mint:/home/msi/diplom-netology-teamcity# git push
+Username for 'https://github.com': Firewal7
+Password for 'https://Firewal7@github.com':
+Перечисление объектов: 5, готово.
+Подсчет объектов: 100% (5/5), готово.
+При сжатии изменений используется до 3 потоков
+Сжатие объектов: 100% (3/3), готово.
+Запись объектов: 100% (3/3), 351 байт | 351.00 КиБ/с, готово.
+Всего 3 (изменений 1), повторно использовано 0 (изменений 0), повторно использовано пакетов 0
+remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+remote: This repository moved. Please use the new location:
+remote:   https://github.com/Firewal7/diplom-application.git
+To https://github.com/Firewal7/diplom-netology-teamcity.git
+   1e02b06..f97de3d  main -> main
+```
 
+![Ссылка 37](https://github.com/Firewal7/diplom-netology/blob/main/images/37.run.jpg)
 
+![Ссылка 38](https://github.com/Firewal7/diplom-netology/blob/main/images/38.dockerhub.jpg)
 
+![Ссылка 39](https://github.com/Firewal7/diplom-netology/blob/main/images/39.museum.jpg)
 
+![Ссылка 40](https://github.com/Firewal7/diplom-netology/blob/main/images/40.app.jpg)
+
+![Ссылка 41](https://github.com/Firewal7/diplom-netology/blob/main/images/41.app.jpg)
+
+### Создадим crontab на master для обновления приложения в кластере Kubernetes из ChartMuseum:
+
+#### Он каждую минуту обновляет текущий репозиторий helm и в случае изменений апгрейдит на новую версию.
+
+```
+* * * * * sudo helm repo update && sudo helm upgrade app applications/applications
+```
+
+#### Поробуем обновить версию:
+
+![Ссылка 42](https://github.com/Firewal7/diplom-netology/blob/main/images/42.team.jpg)
+
+![Ссылка 43](https://github.com/Firewal7/diplom-netology/blob/main/images/43.final.jpg)
+
+![Ссылка 44](https://github.com/Firewal7/diplom-netology/blob/main/images/44.final.jpg)
 
 ## Что необходимо для сдачи задания?
 

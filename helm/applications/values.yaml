@@ -1,7 +1,8 @@
 # Default Values for my Helm Chart
 
 container:
-  image: bbb8c2e28d7d/applications:1.0
+  image: bbb8c2e28d7d/applications
   pullPolicy: IfNotPresent
+  tag: "1.0"
 
 replicaCount: 1
