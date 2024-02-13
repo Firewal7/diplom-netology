@@ -392,7 +392,7 @@ applications    default         1               2024-02-09 08:12:22.038079963 +0
 
 ![Ссылка 17](https://github.com/Firewal7/diplom-netology/blob/main/images/17.deploy.wide.jpg)
 
-Переходим по IP адресу node2 на котором задеплоили (http://51.250.38.216:30201) порт 30201 мы задали в service.yaml 
+Переходим по IP адресу node2 на который задеплоили, порт 30201 мы задали в service.yaml 
 
 ![Ссылка 18](https://github.com/Firewal7/diplom-netology/blob/main/images/18.deploy.appl.jpg)
 
@@ -675,7 +675,7 @@ To https://github.com/Firewal7/diplom-netology-teamcity.git
 3. Репозиторий с конфигурацией ansible, если был выбран способ создания Kubernetes кластера при помощи ansible.
 
 - [Репозиторий с ansible](https://github.com/Firewal7/diplom-netology/tree/main/ansible)
-
+ 
 4. Репозиторий с Dockerfile тестового приложения и ссылка на собранный docker image.
 
 - [Репозиторий с applications](https://github.com/Firewal7/diplom-application.git)
@@ -687,7 +687,7 @@ To https://github.com/Firewal7/diplom-netology-teamcity.git
 
 6. Ссылка на тестовое приложение и веб интерфейс Grafana с данными доступа.
 
-- [Applications](http://51.250.38.216:30201)
-- [Grafana](http://51.250.38.216:30001) Лог: admin, Пасс: admin
+- [Applications](http://51.250.39.171:30201)
+- [Grafana](http://51.250.39.171:30001) Лог: admin, Пасс: admin
 
 7. Все репозитории рекомендуется хранить на одном ресурсе (github, gitlab)
