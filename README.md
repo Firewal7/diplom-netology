@@ -612,7 +612,7 @@ To https://github.com/Firewal7/diplom-netology-teamcity.git
 
 ![Ссылка 35](https://github.com/Firewal7/diplom-netology/blob/main/images/35.Changehelm.jpg)
 
-![Ссылка 36](https://github.com/Firewal7/diplom-netology/blob/main/images/36.value.jpg)
+![Ссылка 36](https://github.com/Firewal7/diplom-netology/blob/main/images/36.values.jpg)
 
 ### Запустим изменения: 
 
