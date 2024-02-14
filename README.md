@@ -644,6 +644,8 @@ To https://github.com/Firewal7/diplom-netology-teamcity.git
 
 ![Ссылка 39](https://github.com/Firewal7/diplom-netology/blob/main/images/39.museum.jpg)
 
+#### Добавим на master-е наш Helm репозиторий:
+
 ![Ссылка 40](https://github.com/Firewal7/diplom-netology/blob/main/images/40.app.jpg)
 
 ![Ссылка 41](https://github.com/Firewal7/diplom-netology/blob/main/images/41.app.jpg)
@@ -656,7 +658,7 @@ To https://github.com/Firewal7/diplom-netology-teamcity.git
 * * * * * sudo helm repo update && sudo helm upgrade app applications/applications
 ```
 
-#### Поробуем обновить версию:
+#### Пробуем обновить версию:
 
 ![Ссылка 42](https://github.com/Firewal7/diplom-netology/blob/main/images/42.team.jpg)
 
