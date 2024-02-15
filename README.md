@@ -526,7 +526,7 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 #### Совместно с развёрткой облачной инфраструктуры развернул две ВМ teamcity-server и teamcity-agent.
 #### Плайбуки развернули на машинах server, agent сам teamcity и установили postgresgl на server.  
 
-#### Зайдём по адресу Teamcity 51.250.83.252:8111
+#### Зайдём на адрес Teamcity:
 
 ![Ссылка 21](https://github.com/Firewal7/diplom-netology/blob/main/images/21.startTC.jpg)
 
@@ -551,6 +551,8 @@ ubuntu@master:~/helm/chart$ curl --verbose --header "Authorization: Bearer b45ac
 ![Ссылка 26](https://github.com/Firewal7/diplom-netology/blob/main/images/26.support.jpg)
 
 ### Соберём проект:
+
+- IP адрес Teamcity опять поменялся, решил это заменой IP в конфиге database.properties, затем перезагрузка контейнера. 
 
 #### Этот скрипт предназначен для получения тега коммита и установки его в качестве параметра сборки.
 
