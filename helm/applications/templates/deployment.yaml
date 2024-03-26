@@ -1,9 +1,9 @@
-apiVersion : apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-deployment
   labels:
-    app : {{ .Release.Name }}-deployment
+    app: {{ .Release.Name }}-deployment
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -12,12 +12,15 @@ spec:
   template:
     metadata:
       labels:
-        project: {{ .Release.Name }}   # Service will look for those PODS Labels!!!
+        project: {{ .Release.Name }}
     spec:
       containers:
-        - name : {{ .Release.Name }}-web
-          image: {{ .Values.container.image }}
+        - name: {{ .Release.Name }}-web
+          image: {{ .Values.container.image }}:{{ .Values.container.tag }}
           ports:
             - containerPort: 80
               hostPort: 9890
               protocol: TCP
+          {{- if .Values.container.pullPolicy }}
+          imagePullPolicy: {{ .Values.container.pullPolicy }}
+          {{- end }}
